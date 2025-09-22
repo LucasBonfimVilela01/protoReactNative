@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "protoReact",
-    "slug": "protoReact",
+    "name": "proto-react-native",
+    "slug": "proto-react-native",
     "version": "1.0.0",
     "orientation": "landscape",
     "icon": "./assets/images/icon.png",
-    "scheme": "protoreact",
+    "scheme": "protoreactnative",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
