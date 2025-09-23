@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "412696495238",
+    "project_id": "bloomyproto",
+    "storage_bucket": "bloomyproto.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:412696495238:android:68bcff03f8d9b383737d07",
+        "android_client_info": {
+          "package_name": "com.Bloomy.protoreactnative"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "412696495238-u6u9202uand75o93f2t4klf4t1q441id.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.Bloomy.protoreactnative",
+            "certificate_hash": "38b443b4ffef81102c0d90db75dd2c0880d23c31"
+          }
+        },
+        {
+          "client_id": "412696495238-2dgs4l3jm1cr8l069marsrjpurvd401d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlD67hBjlwxzVM9l1QXWRX7ODYlsFmYik"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "412696495238-2dgs4l3jm1cr8l069marsrjpurvd401d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

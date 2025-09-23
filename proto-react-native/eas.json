@@ -12,7 +12,12 @@
       "distribution": "internal"
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "android": {
+        "resourceFiles": [
+          "google-services.json"
+        ]
+      }
     }
   },
   "submit": {
