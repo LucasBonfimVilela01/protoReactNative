@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { View, Text } from "react-native";
+import React, { useEffect, useState, } from 'react';
 import { onAuthStateChanged, User  } from 'firebase/auth';
 import { auth } from './firebaseConfig';
 
 
-function HomeScreen() {
+export default function HomeScreen() {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -16,14 +17,14 @@ function HomeScreen() {
   }, []);
 
   return (
-    <div>
+    <View>
       {user ? (
-        <h1>Bem-vindo, {user.displayName || user.email}!</h1> // Exibe o nome ou e-mail
+        <Text>Bem-vindo, {user.displayName || user.email}!</Text> // Exibe o nome ou e-mail
       ) : (
-        <h1>Por favor, faça login ou registre-se.</h1>
+        <Text>Por favor, faça login ou registre-se.</Text>
       )}
       {/* ... outros elementos da sua página inicial */}
-    </div>
+    </View>
   );
 }
 

@@ -1,7 +1,6 @@
 // firebaseConfig.js
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth'; // Importe getAuth para o Authentication
-import { getAnalytics } from "firebase/analytics";
+import { getAuth } from 'firebase/auth';
 
 // Suas credenciais do Firebase
 const firebaseConfig = {
@@ -17,8 +16,7 @@ const firebaseConfig = {
 // Inicialize o Firebase
 const app = initializeApp(firebaseConfig);
 
-// Obtenha a instância do Firebase Authentication
+// Obtenha a instÃ¢ncia do Firebase Authentication
 const auth = getAuth(app);
-const analytics = getAnalytics(app);
 
-export { auth, analytics };
+export { auth };

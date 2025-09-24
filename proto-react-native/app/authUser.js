@@ -1,6 +1,7 @@
 import { createUserWithEmailAndPassword, updateProfile, updateEmail, 
         updatePassword, signOut, deleteUser, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
-import { auth } from './firebaseConfig';
+        import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './firebaseConfig.js';
 
 // Para registrar um novo usuário:
 const handleSignUp = async (email, password) => {
@@ -90,4 +91,15 @@ const handleDeleteAccount = async (password) => { // Pode ser necessário pedir 
     }
 };
 
-import { handleSignUp, handleSignOut, updateUserName, updateUserEmail, updateUserPassword, handleDeleteAccount } from './authUser';
+
+const checkUserLoggedIn = () => {
+  return new Promise((resolve) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      unsubscribe(); // evitar chamadas múltiplas
+      resolve(user);
+    });
+  });
+};
+
+
+export { handleSignUp, handleSignOut, updateUserName, updateUserEmail, updateUserPassword, handleDeleteAccount, checkUserLoggedIn };
