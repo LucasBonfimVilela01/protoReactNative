@@ -1,7 +1,7 @@
 import { createUserWithEmailAndPassword, updateProfile, updateEmail, 
         updatePassword, signOut, deleteUser, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
         import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from './firebaseConfig.js';
+import { auth } from './firebaseconfig.js';
 
 // Para registrar um novo usuário:
 const handleSignUp = async (email, password) => {

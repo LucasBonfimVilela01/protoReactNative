@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Pressable } from 'react-native';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { auth } from './firebaseConfig';
+import { auth } from './firebaseconfig.js';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
