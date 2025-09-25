@@ -1,8 +1,12 @@
 import { Stack, router } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import { useFonts } from 'expo-font';
 
 export default function AppLayout() {
+  const [fontsLoaded] = useFonts({
+    'Bebas-Neue': require('../assets/fonts/BebasNeue-Regular.ttf'),
+  });
   return (
     <Stack>
       <Stack.Screen
@@ -55,5 +59,8 @@ const styles = StyleSheet.create({
   },
   headerRightContainer: {
     flexDirection: 'row',
+  },
+  Text: {
+    fontFamily: 'Bebas-Neue',
   },
 });
