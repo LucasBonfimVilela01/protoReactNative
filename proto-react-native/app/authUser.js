@@ -1,21 +1,40 @@
-import { createUserWithEmailAndPassword, updateProfile, updateEmail, 
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, updateEmail, 
         updatePassword, signOut, deleteUser, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
         import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebaseconfig.js';
 
-// Para registrar um novo usuário:
-const handleSignUp = async (email, password) => {
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        // Usuário criado com sucesso
-        const user = userCredential.user;
-        console.log('Usuário registrado:', user);
-        // Aqui você pode redirecionar o usuário ou atualizar o estado da UI
-    } catch (error) {
-        // Tratar erros, por exemplo: email já em uso, senha fraca
-        console.error('Erro ao registrar:', error.message);
-        // Exibir mensagem de erro para o usuário
+// Para fazer login:
+const handleLogin = async (email, password) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    console.log('Usuário logado:', userCredential.user);
+    return userCredential;
+  } catch (error) {
+    console.error('Erro ao fazer login:', error.message);
+    throw error;
+  }
+};
+
+// Para registrar um novo usuário (atualizada para incluir o nome):
+const handleSignUp = async (email, password, displayName) => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    
+    // Atualizar o nome de exibição se fornecido
+    if (displayName) {
+      await updateProfile(user, {
+        displayName: displayName
+      });
     }
+
+    // Atualizar o e-mail do usuário
+    console.log('Usuário registrado:', user);
+    return userCredential;
+  } catch (error) {
+    console.error('Erro ao registrar:', error.message);
+    throw error;
+  }
 };
 
 // Para fazer logout:
@@ -102,4 +121,4 @@ const checkUserLoggedIn = () => {
 };
 
 
-export { handleSignUp, handleSignOut, updateUserName, updateUserEmail, updateUserPassword, handleDeleteAccount, checkUserLoggedIn };
+export {  handleLogin, handleSignUp, handleSignOut, updateUserName, updateUserEmail, updateUserPassword, handleDeleteAccount, checkUserLoggedIn };

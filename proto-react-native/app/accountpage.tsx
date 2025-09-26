@@ -1,26 +1,40 @@
 // app/accountpage.jsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet, Pressable } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { Alert, View, StyleSheet } from 'react-native';
 import { User } from 'firebase/auth';
-import { handleSignOut, updateUserName, updateUserEmail, updateUserPassword, handleDeleteAccount, checkUserLoggedIn } from './authUser';
-
+import { router } from 'expo-router';
+import { 
+  handleSignOut, 
+  updateUserName, 
+  updateUserEmail, 
+  updateUserPassword, 
+  handleDeleteAccount, 
+  checkUserLoggedIn 
+} from './authUser';
+import useCustomFonts from '../assets/hooks/useCustomFonts';
+import ScreenContainer from '../assets/components/ScreenContainer';
+import BackgroundWrapper from '../assets/components/BackgroundWrapper';
+import ScreenTitle from '../assets/components/ScreenTitle';
+import InputField from '../assets/components/InputField';
+import PasswordField from '../assets/components/PasswordField';
+import CustomButton from '../assets/components/CustomButton';
+import AuthContainer from '../assets/components/AuthContainer';
 
 export default function AccountPage() {
-  const [user, setUser] = useState<User | null>(null);;
+  const fontsLoaded = useCustomFonts();
+  const [user, setUser] = useState<User | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  // Verifica se o usuário está logado
   useEffect(() => {
     (async () => {
       const currentUser = await checkUserLoggedIn();
       if (!currentUser) {
-        router.replace('/signup'); // Redireciona se não estiver logado
+        router.replace('/login');
       } else {
         setUser(currentUser);
         setName(currentUser.displayName || '');
@@ -30,15 +44,25 @@ export default function AccountPage() {
   }, []);
 
   const handleSave = async () => {
-  if (!user) return;
+    if (!user) return;
 
-  if (name !== user.displayName) await updateUserName(name);
-  if (email !== user.email) await updateUserEmail(email);
-  if (password.length > 0) await updateUserPassword(password);
+    setLoading(true);
+    try {
+      if (name !== user.displayName) await updateUserName(name);
+      if (email !== user.email) await updateUserEmail(email);
+      if (password.length > 0) await updateUserPassword(password);
 
-  Alert.alert('Informações atualizadas!');
-  setEditing(false);
-};
+      Alert.alert('Sucesso', 'Informações atualizadas com sucesso!');
+      setEditing(false);
+      setPassword('');
+    } catch (error) {
+      // Substituindo error.message por Alert genérico
+      Alert.alert('Erro', 'Falha ao atualizar informações. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const confirmDelete = () => {
     Alert.alert(
       'Confirmar Exclusão',
@@ -53,8 +77,12 @@ export default function AccountPage() {
               'Digite sua senha',
               'Confirme sua senha para deletar a conta.',
               async (inputPassword) => {
-                await handleDeleteAccount(inputPassword);
-                router.replace('/signup'); // Redireciona após deletar a conta
+                try {
+                  await handleDeleteAccount(inputPassword);
+                  router.replace('/signup');
+                } catch (error) {
+                  Alert.alert('Erro', 'Falha ao deletar conta. Tente novamente.');
+                }
               }
             );
           },
@@ -63,64 +91,97 @@ export default function AccountPage() {
     );
   };
 
-  if (!user) return null;
+  const handleLogout = async () => {
+    try {
+      await handleSignOut();
+      router.replace('/');
+    } catch (error) {
+      Alert.alert('Erro', 'Falha ao fazer logout. Tente novamente.');
+    }
+  };
+
+  if (!fontsLoaded || !user) return null;
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Minha Conta</Text>
+    <BackgroundWrapper>
+      <ScreenContainer>
+        <View style={styles.container}>
+          <ScreenTitle style={styles.title}>Minha Conta</ScreenTitle>
 
-      <Text>Nome:</Text>
-      <TextInput
-        value={name}
-        editable={editing}
-        onChangeText={setName}
-        style={styles.input}
-      />
+          <AuthContainer>
+            <InputField
+              label="Nome"
+              value={name}
+              editable={editing}
+              onChangeText={setName}
+              placeholder="Digite seu nome"
+            />
 
-      <Text>Email:</Text>
-      <TextInput
-        value={email}
-        editable={editing}
-        onChangeText={setEmail}
-        style={styles.input}
-        autoCapitalize="none"
-      />
+            <InputField
+              label="Email"
+              value={email}
+              editable={editing}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              placeholder="Digite seu email"
+            />
 
-      <Text>Senha:</Text>
-      <View style={styles.passwordContainer}>
-        <TextInput
-          value={password}
-          editable={editing}
-          onChangeText={setPassword}
-          style={styles.input}
-          secureTextEntry={!showPassword}
-        />
-        <Pressable onPress={() => setShowPassword((prev) => !prev)}>
-          <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={24} style={styles.eyeIcon} />
-        </Pressable>
-      </View>
+            <PasswordField
+              label="Senha"
+              value={password}
+              editable={editing}
+              onChangeText={setPassword}
+              showPassword={showPassword}
+              setShowPassword={setShowPassword}
+              placeholder={editing ? "Nova senha (deixe em branco para manter)" : "••••••••"}
+            />
+          </AuthContainer>
 
-      {editing ? (
-        <Button title="Salvar Alterações" onPress={handleSave} />
-      ) : (
-        <Button title="Editar Informações" onPress={() => setEditing(true)} />
-      )}
+          <View style={styles.buttonContainer}>
+            <CustomButton
+              title={editing ? 'Salvar Alterações' : 'Editar Informações'}
+              onPress={editing ? handleSave : () => setEditing(true)}
+              variant={editing ? 'success' : 'primary'}
+              loading={loading}
+              disabled={loading}
+            />
 
-      <View style={{ marginTop: 20 }}>
-        <Button title="Deletar Conta" color="red" onPress={confirmDelete} />
-      </View>
+            <CustomButton
+              title="Deletar Conta"
+              onPress={confirmDelete}
+              variant="danger"
+            />
 
-      <View style={{ marginTop: 10 }}>
-        <Button title="Logout" onPress={() => { handleSignOut(); router.replace('/'); }} />
-      </View>
-    </View>
+            <CustomButton
+              title="Logout"
+              onPress={handleLogout}
+              variant="secondary"
+            />
+          </View>
+        </View>
+      </ScreenContainer>
+    </BackgroundWrapper>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 20, flex: 1 },
-  title: { fontSize: 24, marginBottom: 20 },
-  input: { borderWidth: 1, padding: 10, marginBottom: 15, borderRadius: 5, flex: 1 },
-  passwordContainer: { flexDirection: 'row', alignItems: 'center' },
-  eyeIcon: { marginLeft: 10 },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  title: {
+    fontSize: 32,
+    marginBottom: 30,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+  },
+  buttonContainer: {
+    width: '100%',
+    maxWidth: 400,
+    alignItems: 'center',
+  },
 });
