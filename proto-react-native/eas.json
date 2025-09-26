@@ -1,23 +1,18 @@
 {
   "cli": {
-    "version": ">= 16.19.3",
-    "appVersionSource": "remote"
+    "version": ">= 16.0.0"
   },
   "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal"
+    "production": {
+      "channel": "production"
     },
     "preview": {
-      "distribution": "internal"
+      "channel": "preview"
     },
-    "production": {
-      "autoIncrement": true,
-      "android": {
-        "resourceFiles": [
-          "google-services.json"
-        ]
-      }
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "channel": "development"
     }
   },
   "submit": {
