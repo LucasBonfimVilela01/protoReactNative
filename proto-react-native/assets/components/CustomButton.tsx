@@ -1,6 +1,14 @@
 // assets/components/CustomButton.tsx
 import React from 'react';
-import { Pressable, Text, StyleSheet, StyleProp, ViewStyle, TextStyle } from 'react-native';
+import { 
+  Pressable, 
+  Text, 
+  StyleSheet, 
+  StyleProp, 
+  ViewStyle, 
+  TextStyle,
+  ActivityIndicator 
+} from 'react-native';
 
 interface CustomButtonProps {
   title: string;
@@ -8,6 +16,8 @@ interface CustomButtonProps {
   variant?: 'primary' | 'secondary' | 'danger' | 'success';
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
+  disabled?: boolean;
+  loading?: boolean;
 }
 
 export default function CustomButton({ 
@@ -15,7 +25,9 @@ export default function CustomButton({
   onPress, 
   variant = 'primary', 
   style, 
-  textStyle 
+  textStyle,
+  disabled = false,
+  loading = false
 }: CustomButtonProps) {
   const getVariantStyle = () => {
     switch (variant) {
@@ -26,12 +38,22 @@ export default function CustomButton({
     }
   };
 
+  const getDisabledStyle = () => {
+    if (disabled || loading) return styles.disabledButton;
+    return {};
+  };
+
   return (
     <Pressable 
-      style={[styles.button, getVariantStyle(), style]} 
+      style={[styles.button, getVariantStyle(), getDisabledStyle(), style]} 
       onPress={onPress}
+      disabled={disabled || loading}
     >
-      <Text style={[styles.buttonText, textStyle]}>{title}</Text>
+      {loading ? (
+        <ActivityIndicator size="small" color="#fff" />
+      ) : (
+        <Text style={[styles.buttonText, textStyle]}>{title}</Text>
+      )}
     </Pressable>
   );
 }
@@ -60,6 +82,10 @@ const styles = StyleSheet.create({
   },
   successButton: {
     backgroundColor: '#4CAF50',
+  },
+  disabledButton: {
+    backgroundColor: '#cccccc',
+    opacity: 0.6,
   },
   buttonText: {
     color: '#fff',
