@@ -51,7 +51,6 @@ export default function PasswordField({
           style={[styles.passwordInput, inputStyle]}
           secureTextEntry={!showPassword} // Isso deve funcionar agora
           placeholderTextColor="#666" // Cor do placeholder
-           // Cor do texto digitado (preto)
         />
         <Pressable onPress={togglePasswordVisibility}>
           <Ionicons
