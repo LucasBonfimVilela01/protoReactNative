@@ -28,7 +28,7 @@ export default function AppLayout() {
           ),
           headerRight: () => (
             <View style={styles.headerRightContainer}>
-              <Pressable onPress={() => router.push('settingspage')}>
+              <Pressable onPress={() => router.push('/settingspage')}>
                 <FontAwesome
                   name="cog"
                   size={24}
@@ -37,7 +37,7 @@ export default function AppLayout() {
                 />
               </Pressable>
               {/* Corrected onPress handler */}
-              <Pressable onPress={() => router.push('accountpage')}>
+              <Pressable onPress={() => router.push('/accountpage')}>
                 <Ionicons
                   name="person-sharp"
                   size={24}

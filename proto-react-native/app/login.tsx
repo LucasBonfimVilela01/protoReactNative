@@ -1,6 +1,9 @@
 // app/login.jsx
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, Pressable } from 'react-native';
+import React, { useState, useLayoutEffect } from 'react';
+import {
+    View, Text, TextInput, StyleSheet, Alert, Pressable,
+    ScrollView, KeyboardAvoidingView, Platform,
+    ImageBackground, Image} from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from './firebaseconfig.js';
 import { router } from 'expo-router';
@@ -15,6 +18,7 @@ export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    
 
     const handleLogin = async () => {
         try {
@@ -26,73 +30,104 @@ export default function LoginPage() {
         }
     };
 
-    if (!fontsLoaded) {
-        return null; // Or a loading spinner
-    }
+    if (!fontsLoaded) return null;
 
     return (
-        <View style={styles.container}>
-            <View style={styles.inputContainer}>
-                <Text style={styles.title}>Login</Text>
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+        >
+            {/* Background Image */}
+            <ImageBackground
+                source={require('../assets/images/Textura.png')}
+                resizeMode="repeat"
+                style={{ flex: 1 }}
+            >
+                <ScrollView
+                    contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+                    keyboardShouldPersistTaps="handled"
+                >
+                    {/* Container principal */}
+                    <View style={styles.container}>
 
-                {/* Email Input with Label */}
-                <View style={styles.fieldContainer}>
-                    <Text style={styles.label}>Email</Text>
-                    <TextInput
-                        value={email}
-                        onChangeText={setEmail}
-                        style={styles.input}
-                        autoCapitalize="none"
-                        keyboardType="email-address"
-                    />
-                </View>
+                        {/* Container de entrada com fundo */}
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.title}>Login</Text>
 
-                {/* Password Input with Label */}
-                <View style={styles.fieldContainer}>
-                    <Text style={styles.label}>Senha</Text>
-                    <View style={styles.passwordWrapper}>
-                        <TextInput
-                            value={password}
-                            onChangeText={setPassword}
-                            style={styles.passwordInput}
-                            secureTextEntry={!showPassword}
-                        />
-                        <Pressable onPress={() => setShowPassword((prev) => !prev)}>
-                            <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={24} style={styles.eyeIcon} />
-                        </Pressable>
+                            {/* Email */}
+                            <View style={styles.fieldContainer}>
+                                <Text style={styles.label}>Email</Text>
+                                <TextInput
+                                    value={email}
+                                    onChangeText={setEmail}
+                                    style={styles.input}
+                                    autoCapitalize="none"
+                                    keyboardType="email-address"
+                                />
+                            </View>
+
+                            {/* Senha */}
+                            <View style={styles.fieldContainer}>
+                                <Text style={styles.label}>Senha</Text>
+                                <View style={styles.passwordWrapper}>
+                                    <TextInput
+                                        value={password}
+                                        onChangeText={setPassword}
+                                        style={styles.passwordInput}
+                                        secureTextEntry={!showPassword}
+                                    />
+                                    <Pressable onPress={() => setShowPassword((prev) => !prev)}>
+                                        <Ionicons
+                                            name={showPassword ? 'eye-off' : 'eye'}
+                                            size={24}
+                                            style={styles.eyeIcon}
+                                        />
+                                    </Pressable>
+                                </View>
+                            </View>
+                        </View>
+
+                        {/* Container de botões */}
+                        <View style={styles.buttonContainer}>
+
+                            {/* Botão de login */}
+                            <Pressable style={styles.buttons} onPress={handleLogin}>
+                                <Text style={styles.buttonText}>Entrar</Text>
+                            </Pressable>
+
+                            {/* Link para a página de cadastro */}
+                            <Pressable onPress={() => router.replace('/signup')}>
+                                <Text style={styles.link}>Não possui uma conta? Cadastre-se</Text>
+                            </Pressable>
+
+                        </View>
                     </View>
-                </View>
-            </View>
-
-            <View style={styles.buttonContainer}>
-                <Pressable style={styles.buttons} onPress={handleLogin}>
-                    <Text style={styles.buttonText}>Entrar</Text>
-                </Pressable>
-                <Pressable onPress={() => router.replace('/signup')}>
-                    <Text style={styles.link}>Não possui uma conta? Cadastre-se</Text>
-                </Pressable>
-            </View>
-        </View>
+                </ScrollView>
+            </ImageBackground>
+        </KeyboardAvoidingView>
     );
 }
 
+{/* Estilos */ }
 const styles = StyleSheet.create({
     container: {
-        padding: 20,
-        flex: 0.8,
+        flex: 1,
         justifyContent: 'center',
-        marginHorizontal: '20%'
+        alignItems: 'center',
+        padding: 20,
     },
     inputContainer: {
-        marginTop: 40,
-        marginBottom: 20,
+        width: '100%',
+        maxWidth: 400,
         backgroundColor: '#FFBB56',
         padding: 20,
-        borderRadius: 10
+        borderRadius: 10,
+        marginBottom: 20,
     },
     buttonContainer: {
-        marginTop: 20,
-        marginHorizontal: '25%'
+        width: '50%',
+        maxWidth: 200,
+        marginTop: 10,
     },
     buttons: {
         marginTop: 10,
@@ -113,11 +148,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: 'Bebas-Neue'
     },
-    // Container for a label and its input
     fieldContainer: {
         marginBottom: 15,
     },
-    // New label style
     label: {
         color: '#7253B5',
         fontFamily: 'Bebas-Neue',
@@ -125,10 +158,9 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         padding: 5,
     },
-    // Updated style for the standard (email) input
     input: {
         borderWidth: 1,
-        borderColor: '#ccc', // Added a border color for visibility
+        borderColor: '#ccc',
         padding: 10,
         borderRadius: 15,
         backgroundColor: '#fff',
@@ -136,7 +168,6 @@ const styles = StyleSheet.create({
         fontFamily: 'Bebas-Neue',
         fontSize: 16,
     },
-    // Wrapper for the password input and icon, styled to look like an input field
     passwordWrapper: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -146,7 +177,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         paddingHorizontal: 10,
     },
-    // The actual TextInput for the password, borderless and flexible
     passwordInput: {
         flex: 1,
         minHeight: 40,
@@ -161,7 +191,7 @@ const styles = StyleSheet.create({
     link: {
         marginTop: 20,
         textAlign: 'center',
-        color: 'blue',
+        color: 'white',
         fontFamily: 'Bebas-Neue'
     },
 });

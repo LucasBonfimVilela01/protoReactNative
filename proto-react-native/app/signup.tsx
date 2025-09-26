@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, Pressable } from 'react-native';
+import {
+  View, Text, TextInput, StyleSheet, Alert, Pressable,
+  ScrollView, KeyboardAvoidingView, Platform, ImageBackground
+} from 'react-native';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth } from './firebaseconfig.js';
 import { router } from 'expo-router';
@@ -30,82 +33,112 @@ export default function SignUpPage() {
   if (!fontsLoaded) return null;
 
   return (
-    <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <Text style={styles.title}>Crie sua conta</Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      {/* Background Image */}
+      <ImageBackground
+        source={require('../assets/images/Textura.png')}
+        resizeMode="repeat"
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Container principal */}
+          <View style={styles.container}>
 
-        {/* Nome */}
-        <View style={styles.fieldContainer}>
-          <Text style={styles.label}>Nome</Text>
-          <TextInput
-            value={name}
-            onChangeText={setName}
-            style={styles.input}
-          />
-        </View>
+            {/* Container de entrada com fundo */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.title}>Crie sua conta</Text>
 
-        {/* Email */}
-        <View style={styles.fieldContainer}>
-          <Text style={styles.label}>Email</Text>
-          <TextInput
-            value={email}
-            onChangeText={setEmail}
-            style={styles.input}
-            autoCapitalize="none"
-            keyboardType="email-address"
-          />
-        </View>
+              {/* Nome */}
+              <View style={styles.fieldContainer}>
+                <Text style={styles.label}>Nome</Text>
+                <TextInput
+                  value={name}
+                  onChangeText={setName}
+                  style={styles.input}
+                />
+              </View>
 
-        {/* Senha */}
-        <View style={styles.fieldContainer}>
-          <Text style={styles.label}>Senha</Text>
-          <View style={styles.passwordWrapper}>
-            <TextInput
-              value={password}
-              onChangeText={setPassword}
-              style={styles.passwordInput}
-              secureTextEntry={!showPassword}
-            />
-            <Pressable onPress={() => setShowPassword((prev) => !prev)}>
-              <Ionicons
-                name={showPassword ? 'eye-off' : 'eye'}
-                size={24}
-                style={styles.eyeIcon}
-              />
-            </Pressable>
+              {/* Email */}
+              <View style={styles.fieldContainer}>
+                <Text style={styles.label}>Email</Text>
+                <TextInput
+                  value={email}
+                  onChangeText={setEmail}
+                  style={styles.input}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                />
+              </View>
+
+              {/* Senha */}
+              <View style={styles.fieldContainer}>
+                <Text style={styles.label}>Senha</Text>
+                <View style={styles.passwordWrapper}>
+                  <TextInput
+                    value={password}
+                    onChangeText={setPassword}
+                    style={styles.passwordInput}
+                    secureTextEntry={!showPassword}
+                  />
+                  <Pressable onPress={() => setShowPassword((prev) => !prev)}>
+                    <Ionicons
+                      name={showPassword ? 'eye-off' : 'eye'}
+                      size={24}
+                      style={styles.eyeIcon}
+                    />
+                  </Pressable>
+                </View>
+              </View>
+            </View>
+
+            {/* Container de botões */}
+            <View style={styles.buttonContainer}>
+
+              {/* Botão de cadastro */}
+              <Pressable style={styles.buttons} onPress={handleSignUp}>
+                <Text style={styles.buttonText}>Cadastrar</Text>
+              </Pressable>
+
+              {/* Link para a página de login */}
+              <Pressable onPress={() => router.replace('/login')}>
+                <Text style={styles.link}>Já possui uma conta? Faça login</Text>
+              </Pressable>
+
+            </View>
+
           </View>
-        </View>
-      </View>
-
-      <View style={styles.buttonContainer}>
-        <Pressable style={styles.buttons} onPress={handleSignUp}>
-          <Text style={styles.buttonText}>Cadastrar</Text>
-        </Pressable>
-        <Pressable onPress={() => router.replace('/login')}>
-          <Text style={styles.link}>Já possui uma conta? Faça login</Text>
-        </Pressable>
-      </View>
-    </View>
+        </ScrollView>
+      </ImageBackground>
+    </KeyboardAvoidingView>
   );
 }
 
+{/* Estilos */}
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    flex: 0.8,
+    flex: 1,
     justifyContent: 'center',
-    marginHorizontal: '20%'
+    alignItems: 'center',
+    padding: 20,
   },
   inputContainer: {
-    marginTop: 40,
-    marginBottom: 20,
+    width: '100%',
+    maxWidth: 400,
     backgroundColor: '#FFBB56',
     padding: 20,
-    borderRadius: 10
+    borderRadius: 10,
+    marginBottom: 20,
   },
   buttonContainer: {
-    marginTop: 20,
-    marginHorizontal: '25%'
+    width: '50%',
+    maxWidth: 200,
+    marginTop: 10,
   },
   buttons: {
     marginTop: 10,
@@ -169,7 +202,7 @@ const styles = StyleSheet.create({
   link: {
     marginTop: 20,
     textAlign: 'center',
-    color: 'blue',
+    color: 'white',
     fontFamily: 'Bebas-Neue'
   },
 });
