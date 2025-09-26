@@ -16,7 +16,7 @@ import ScreenContainer from '../assets/components/ScreenContainer';
 import BackgroundWrapper from '../assets/components/BackgroundWrapper';
 import ScreenTitle from '../assets/components/ScreenTitle';
 import InputField from '../assets/components/InputField';
-import PasswordField from '../assets/components/PasswordField';
+import { PasswordField } from '../assets/components';
 import CustomButton from '../assets/components/CustomButton';
 import AuthContainer from '../assets/components/AuthContainer';
 
